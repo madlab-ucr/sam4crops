@@ -47,7 +47,7 @@ parser.add_argument('--use_gpu', type=int, default=7,
 parser.add_argument('--num_samples', type=int, default=100,
                     help='no. of datapoints to use in experiments')
 
-parser.add_argument('--data_dir', default="/data/rgura001/AI4CP/sam4crops/aoi_samples/overlap_0.5/",
+parser.add_argument('--data_dir', default="/data/rgura001/AI4CP.data/sam4crops/aoi_samples/overlap_0.5/",
                     help='path to oi samples dir')
 
 parser.add_argument('--model_type', default='vit_h',

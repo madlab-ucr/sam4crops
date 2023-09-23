@@ -18,7 +18,7 @@ with open("/home/rgura001/segment-anything/sam4crops/unusable_tiles.txt", 'r') a
     unusable_tiles = [line.rstrip() for line in file]
 
 overlap = 0.5
-SAVE_DIR = "/data/rgura001/AI4CP/sam4crops/aoi_samples/overlap_{}".format(overlap)
+SAVE_DIR = "/data/rgura001/AI4CP.data/sam4crops/aoi_samples/overlap_{}".format(overlap)
 if not os.path.exists(SAVE_DIR):
     os.makedirs(SAVE_DIR)
 
