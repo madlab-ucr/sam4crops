@@ -69,17 +69,21 @@ parser.add_argument('--crop_n_points_downscale_factor_vals', metavar='N', type=i
                     default=[1],
                     help='how much to downscale the image after each crop?')
 
+parser.add_argument('--results_file_id', default="",
+                    help='identifier to add to results file name')
+
 args = parser.parse_args()
 
 device = "cuda:{}".format(args.use_gpu)
 num_samples = args.num_samples
 
-RESULTS_DIR = f"/home/rgura001/segment-anything/sam4crops/results/grid_search/num_samples_{num_samples}"
-RESULTS_DIR_ALT = f"/data/rgura001/segment-anything/sam4crops/results/grid_search/num_samples_{num_samples}"
+RESULTS_DIR = f"/home/rgura001/segment-anything/sam4crops/results/grid_search/num_samples_{num_samples}_alt"
 if not os.path.exists(RESULTS_DIR):
     os.makedirs(RESULTS_DIR)
-if not os.path.exists(RESULTS_DIR_ALT):
-    os.makedirs(RESULTS_DIR_ALT)
+
+# RESULTS_DIR_ALT = f"/data/rgura001/segment-anything/sam4crops/results/grid_search/num_samples_{num_samples}"
+# if not os.path.exists(RESULTS_DIR_ALT):
+#     os.makedirs(RESULTS_DIR_ALT)
 
 model_type = args.model_type
 MODEL_DIR = args.model_chkpt_dir
@@ -149,9 +153,9 @@ for aoi_size in aoi_sizes:
                         os.makedirs(SAVE_DIR+"/plots")
                         os.makedirs(SAVE_DIR+"/preds")
                     
-                    SAVE_DIR_ALT=RESULTS_DIR_ALT+f"/aoi_size_{aoi_size}/mmra_perc_{min_mask_area_perc}/pps_perc_{pps_perc}/cropnlayers_{crop_n_layers}/nms_thresh_{nms_thresh}"
-                    if not os.path.exists(SAVE_DIR_ALT):
-                        os.makedirs(SAVE_DIR_ALT+"/preds/boolean_masks")
+                    # SAVE_DIR_ALT=RESULTS_DIR_ALT+f"/aoi_size_{aoi_size}/mmra_perc_{min_mask_area_perc}/pps_perc_{pps_perc}/cropnlayers_{crop_n_layers}/nms_thresh_{nms_thresh}"
+                    # if not os.path.exists(SAVE_DIR_ALT):
+                    #     os.makedirs(SAVE_DIR_ALT+"/preds/boolean_masks")
 
                     result_df = pd.DataFrame()
                     # result_df['sample_idx'] = sample_idxes
@@ -240,7 +244,7 @@ for aoi_size in aoi_sizes:
                     result_df.columns = col_names
                     results = pd.concat([results, result_df], ignore_index=True, axis=0)
                     # results = results.sort_values(by=['sample_idx'])
-                    results.to_csv(RESULTS_DIR+f"/aoi_size_{aoi_size}/results.csv", index=False)
+                    results.to_csv(RESULTS_DIR+f"/aoi_size_{aoi_size}/results{args.results_file_id}.csv", index=False)
                 
                 except Exception as e:
                     print("Error encountered! Continuing...")

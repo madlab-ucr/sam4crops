@@ -18,7 +18,7 @@ import pandas as pd
 from colormap import getCDLRGB, getCDLHEX
 
 
-original_class_names = ['Corn','Cotton','Rice','Sunflower','Barley','Winter_Wheat','Safflower','Dry Beans','Onions','Tomatoes','Cherries','Grapes','Citrus','Almonds','Walnut','Pistachio','Garlic','Olives','Pomegranates','Alfalfa','Hay','Barren_land','Fallow_and_Idle','Forests_combined','Grass_combined','Wetlands_combined','Water','Urban']
+# original_class_names = ['Corn','Cotton','Rice','Sunflower','Barley','Winter_Wheat','Safflower','Dry Beans','Onions','Tomatoes','Cherries','Grapes','Citrus','Almonds','Walnut','Pistachio','Garlic','Olives','Pomegranates','Alfalfa','Hay','Barren_land','Fallow_and_Idle','Forests_combined','Grass_combined','Wetlands_combined','Water','Urban']
 class_names = ['Background','Corn','Cotton','Rice','Sunflower','Barley','Winter Wheat','Safflower','Dry Beans','Onions','Tomatoes','Cherries','Grapes','Citrus','Almonds','Walnuts','Pistachios','Garlic','Olives','Pomegranates','Alfalfa','Other Hay/Non Alfalfa','Barren','Fallow/Idle Cropland','Forest','Grassland/Pasture','Wetlands','Water','Developed']
 labels_list = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28, 100]
 cdl_values_list = [0, 1, 2, 3, 6, 21, 24, 33, 42, 49, 54, 66, 69, 72, 75, 76, 204, 208, 211, 217, 36, 37, 65, 61, 63, 176, 87, 83, 82, 100]
@@ -83,10 +83,12 @@ def show_points(coords, labels, ax, marker_size=50):
     ax.scatter(neg_points[:, 0], neg_points[:, 1], color='blue', marker='*', s=marker_size, 
                edgecolor='white', linewidth=0.1)   
     
-def plot_bin_prediction(input=None, gt_mask=None, bin_mask=None, bin_mask_cdl=None, pred_mask=None,
+def plot_bin_prediction(input=None, gt_mask=None, gt_bin_mask=None, pred_mask=None,
                         input_points=None, input_labels=None,
                        titlestr="", show=False, save=False, SAVE_PATH=None):
-    cdl_val = np.unique(bin_mask_cdl)[-1]
+    print(input.shape, gt_mask.shape, gt_bin_mask.shape, pred_mask.shape)
+    cdl_val = np.unique(gt_bin_mask)[-1] ## the non-zero value in the binary mask
+    
     fig, axs = plt.subplots(1,4, figsize=(20,10))
     axs[0].imshow(input)
     # show_mask(pred_mask, axs[0])
@@ -97,12 +99,11 @@ def plot_bin_prediction(input=None, gt_mask=None, bin_mask=None, bin_mask_cdl=No
     axs[1].imshow(gt_mask)
     axs[1].set_title("Multi-class Ground Truth", fontsize=15)
 
-    # bin_mask = colormap_mask(np.vectorize(labels_cdl_map.get)(bin_mask))
-    # axs[2].imshow(bin_mask)
-    axs[2].imshow(colormap_mask(np.vectorize(labels_cdl_map.get)(bin_mask_cdl)))
+    bin_mask_cdl = colormap_mask(np.vectorize(labels_cdl_map.get)(gt_bin_mask))
+    axs[2].imshow(bin_mask_cdl)
     axs[2].set_title("Binary Ground Truth\n(Used for prompts sampling)", fontsize=15)
 
-    axs[3].imshow(colormap_mask(np.vectorize(labels_cdl_map.get)(pred_mask*cdl_val))) # cmap='nipy_spectral'
+    axs[3].imshow(colormap_mask(np.vectorize(labels_cdl_map.get)(pred_mask))) # cmap='nipy_spectral'
     axs[3].set_title("Prediction", fontsize=15)
 
     axs[0].axis('off')
@@ -112,37 +113,59 @@ def plot_bin_prediction(input=None, gt_mask=None, bin_mask=None, bin_mask_cdl=No
 
     plt.suptitle(titlestr, fontsize=20, y=0.95)
     # plt.tight_layout()
-    if show:
-        plt.show()
     if save:
         plt.savefig(SAVE_PATH)
+    if show:
+        plt.show()
     plt.close()
 
 def plot_prediction(input=None, gt_mask=None, pred_mask=None, 
-                    titlestr="", show=False, save=False, SAVE_PATH=None):
+                    show_prompts=False, input_points=None, input_labels=None,
+                    colormap_pred_mask=False,
+                    titlestr="", title_padding=0.95, show=False, save=False, SAVE_PATH=None):
     fig, axs = plt.subplots(1,3, figsize=(10,7))
     axs[0].imshow(input)
+    if show_prompts:
+        show_points(input_points, input_labels, axs[0])
     axs[0].set_title("Input", fontsize=20)
 
     gt_mask = colormap_mask(np.vectorize(labels_cdl_map.get)(gt_mask))
-    
     axs[1].imshow(gt_mask)
     axs[1].set_title("Ground Truth", fontsize=20)
 
-    axs[2].imshow(pred_mask, cmap='nipy_spectral')
+    if colormap_pred_mask:
+        pred_mask = colormap_mask(np.vectorize(labels_cdl_map.get)(pred_mask))
+        axs[2].imshow(pred_mask)
+    else:
+        axs[2].imshow(pred_mask, cmap='nipy_spectral')
     axs[2].set_title("Prediction", fontsize=20)
 
     axs[0].axis('off')
     axs[1].axis('off')
     axs[2].axis('off')
 
-    plt.suptitle(titlestr, y=0.9)
+    plt.suptitle(titlestr, y=title_padding)
     # plt.tight_layout()
     if show:
         plt.show()
     if save:
         plt.savefig(SAVE_PATH)
     plt.close()
+
+def calc_metrics(gt_mask=None, pred_mask=None, clust_only=True):
+    # print("Evaluating clustering consensus...")
+    clust_score = eval_clustering(labels_true=gt_mask.flatten(), 
+                                        labels_pred=pred_mask.flatten())
+    # print("DONE!")
+    mean_dice_coeff, mean_iou = None, None
+    if not clust_only:
+        # print("Calculating Dice Overlap and IoU...")
+        claswise_dice_coeff, mean_dice_coeff = multiclass_dice_overlap(true_mask=gt_mask, 
+                                                                            predicted_mask=pred_mask)
+        classwise_iou, mean_iou = multiclass_iou(true_mask=gt_mask, 
+                                                        predicted_mask=pred_mask)
+        # print("DONE!")
+    return clust_score, np.round(mean_dice_coeff, 3), np.round(mean_iou,3)
 
 def multiclass_iou(true_mask=None, predicted_mask=None):
     """
