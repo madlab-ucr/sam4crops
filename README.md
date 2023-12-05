@@ -2,6 +2,8 @@
 
 Poses the problem of quantifying SAM's zero-shot performance on multiclass segmentation as a clustering consensus problem.
 
+**Paper:** https://arxiv.org/pdf/2311.15138.pdf
+
 ## Codebase
 
 1. `src`: Folder containing scripts
