@@ -40,7 +40,7 @@ def extract_pheno_features(i, id_):
     np.save(NDVI_SAVE_DIR+"/{}_NDVI.npy".format(id_), image_ndvi_processed)
 
     #_________________________________________________________________________________________________________________________________#
-    ## Extract 15 phenology features for each pixel's timeseries using Phenolopy
+    ## Extract 15 phenology features for each pixel's timeseries using Phenolopy - https://github.com/lewistrotter/PhenoloPy
     phenology_features = np.empty((image_ndvi_processed.shape[0], image_ndvi_processed.shape[1], 15)) ## Stores the 15 phenology features for the processed NDVI cube
     
     # TODO
