@@ -12,7 +12,6 @@ Poses the problem of quantifying SAM's zero-shot performance on multiclass segme
     - `grid_search.py`: Script for grid search over all experimental parameters.
     - `utils.py`: Useful plotting and other utils.
     - `make_aoi_samples.py`: Script to make samples for experiments from the CalCrop21 benchmark. 
-    - `extract_pheno_features`: [WORK IN PROGRESS] Script to extract Phenology Features for the CalCrop21 dataset.
     - `unsuable.tiles.txt`: This are the tiles from Calcrop21 that are deemed not suitable for this analysis after the max NDVI RGB extraction.
     - `colormap.py`: A colormap for the CDL.
 
