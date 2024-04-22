@@ -17,6 +17,22 @@ import pandas as pd
 
 from colormap import getCDLRGB, getCDLHEX
 
+'''
+## The following is for mapping CalCrop21 crop-types with their CDL values so that I can visualize the CDL ground-truth appropriately.
+class_names = ['Background','Corn','Cotton','Rice','Sunflower','Barley','Winter Wheat','Safflower','Dry Beans','Onions','Tomatoes','Cherries','Grapes','Citrus','Almonds','Walnuts','Pistachios','Garlic','Olives','Pomegranates','Alfalfa','Other Hay/Non Alfalfa','Barren','Fallow/Idle Cropland','Forest','Grassland/Pasture','Wetlands','Water','Developed']
+labels_list = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+print(len(class_names), len(labels_list))
+
+crop_legend = pd.read_csv("crop_legend_multilevel_encoded.csv")
+
+cdl_values_list = []
+for class_name in class_names:
+    val = crop_legend[crop_legend['Crops_Level_1'] == class_name]['Crops_Level_1_enc'].to_list()[0]
+    cdl_values_list.append(val)
+
+print(cdl_values_list)
+print(len(class_names), len(labels_list), len(cdl_values_list))
+'''
 
 # original_class_names = ['Corn','Cotton','Rice','Sunflower','Barley','Winter_Wheat','Safflower','Dry Beans','Onions','Tomatoes','Cherries','Grapes','Citrus','Almonds','Walnut','Pistachio','Garlic','Olives','Pomegranates','Alfalfa','Hay','Barren_land','Fallow_and_Idle','Forests_combined','Grass_combined','Wetlands_combined','Water','Urban']
 class_names = ['Background','Corn','Cotton','Rice','Sunflower','Barley','Winter Wheat','Safflower','Dry Beans','Onions','Tomatoes','Cherries','Grapes','Citrus','Almonds','Walnuts','Pistachios','Garlic','Olives','Pomegranates','Alfalfa','Other Hay/Non Alfalfa','Barren','Fallow/Idle Cropland','Forest','Grassland/Pasture','Wetlands','Water','Developed']
