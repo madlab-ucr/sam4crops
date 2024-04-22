@@ -22,14 +22,11 @@ from colormap import getCDLRGB, getCDLHEX
 class_names = ['Background','Corn','Cotton','Rice','Sunflower','Barley','Winter Wheat','Safflower','Dry Beans','Onions','Tomatoes','Cherries','Grapes','Citrus','Almonds','Walnuts','Pistachios','Garlic','Olives','Pomegranates','Alfalfa','Other Hay/Non Alfalfa','Barren','Fallow/Idle Cropland','Forest','Grassland/Pasture','Wetlands','Water','Developed']
 labels_list = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
 print(len(class_names), len(labels_list))
-
 crop_legend = pd.read_csv("crop_legend_multilevel_encoded.csv")
-
 cdl_values_list = []
 for class_name in class_names:
     val = crop_legend[crop_legend['Crops_Level_1'] == class_name]['Crops_Level_1_enc'].to_list()[0]
     cdl_values_list.append(val)
-
 print(cdl_values_list)
 print(len(class_names), len(labels_list), len(cdl_values_list))
 '''
