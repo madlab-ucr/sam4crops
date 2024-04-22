@@ -77,7 +77,7 @@ args = parser.parse_args()
 device = "cuda:{}".format(args.use_gpu)
 num_samples = args.num_samples
 
-RESULTS_DIR = f"/home/rgura001/segment-anything/sam4crops/results/grid_search/num_samples_{num_samples}_alt"
+RESULTS_DIR = f"/home/rgura001/segment-anything/sam4crops/results/grid_search/num_samples_{num_samples}"
 if not os.path.exists(RESULTS_DIR):
     os.makedirs(RESULTS_DIR)
 
@@ -211,6 +211,7 @@ for aoi_size in aoi_sizes:
                         # with open(SAVE_DIR_ALT+"/preds/boolean_masks/sample_{}.json".format(idx), "w") as fp:
                         #     json_tricks.dump(masks, fp)
 
+                        print("Evaluating clustering consensus...")
                         clust_score = eval_clustering(gt_mask.flatten(), pred_mask.flatten())
                         clust_score['num_labels_in_pred_mask'] = len(np.unique(pred_mask))
                         clust_score['num_labels_in_gt_mask'] = len(np.unique(gt_mask))
