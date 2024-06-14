@@ -4,6 +4,11 @@ Poses the problem of quantifying SAM's zero-shot performance on multiclass segme
 
 **Paper:** https://arxiv.org/pdf/2311.15138.pdf
 
+## Setup
+1. Get the codebase of SAM - `git clone https://github.com/facebookresearch/segment-anything`
+2. Get this codebase and save it in the top-level directory of SAM - `cd segment-anything` then `git clone https://github.com/madlab-ucr/sam4crops.git`
+3. Download SAM weights from step 1 repo github page and store them in `segment-anything/sam4crops/cached_models`
+
 ## Codebase
 
 1. `src`: Folder containing scripts
